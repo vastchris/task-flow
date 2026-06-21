@@ -1,0 +1,8 @@
+node_modules/
+.npm-cache/
+dist/
+task-flow_back/
+.tmp-*/
+*.log
+.DS_Store
+Thumbs.db

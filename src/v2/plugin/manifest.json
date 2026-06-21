@@ -1,0 +1,10 @@
+{
+  "id": "task-flow",
+  "name": "Task Flow",
+  "version": "2.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Sidebar-first task management for Obsidian.",
+  "author": "",
+  "authorUrl": "",
+  "isDesktopOnly": false
+}

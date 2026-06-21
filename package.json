@@ -1,0 +1,28 @@
+{
+  "name": "task-flow-v2.1",
+  "version": "2.1.0",
+  "description": "Task Flow 2.1 Obsidian plugin source project",
+  "main": "dist/task-flow/main.js",
+  "scripts": {
+    "dev": "node scripts/prepare-dist.mjs && node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production && node scripts/prepare-dist.mjs",
+    "test": "npm run test:data && npm run test:created && npm run test:deleted && npm run test:modified && npm run test:status",
+    "test:data": "node scripts/run-v2-data-tests.mjs",
+    "test:created": "node scripts/run-v2-created-tests.mjs",
+    "test:deleted": "node scripts/run-v2-deleted-tests.mjs",
+    "test:modified": "node scripts/run-v2-modified-tests.mjs",
+    "test:status": "node scripts/run-v2-status-tests.mjs"
+  },
+  "keywords": [
+    "obsidian",
+    "task-flow"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "^0.20.2",
+    "obsidian": "^1.5.12",
+    "typescript": "^5.4.3"
+  }
+}
