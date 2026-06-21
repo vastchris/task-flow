@@ -4,7 +4,7 @@ Task Flow 是一个 Obsidian 任务流插件。
 
 它用侧边栏把 Markdown 中的周任务、日任务、子任务、状态、工作记录和标签整理成一套可执行的任务流程。任务仍然写在 Obsidian 文档里，侧边栏负责每天真正使用时的查看、创建、推进和调整。
 
-<img src="picture/桌面端4.png" alt="Task Flow 桌面端总览" width="900">
+<img src="picture/task-flow-cover-final.png" alt="Task Flow 封面" width="100%">
 
 ## 核心设计：Markdown 记录，侧边栏执行
 
