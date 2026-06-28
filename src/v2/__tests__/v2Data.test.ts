@@ -305,6 +305,19 @@ const monthData: MonthTaskData = {
       weektdayTaskIds: [],
       daytdayTaskIds: null
     },
+    "tf-d-chain-1": {
+      id: "tf-d-chain-1",
+      area: "day",
+      areaKey: "2026.6.1",
+      name: "repeatTask",
+      status: "doing",
+      parentId: null,
+      childIds: [],
+      sourceWeekTaskId: null,
+      sourceDayTaskId: null,
+      weektdayTaskIds: [],
+      daytdayTaskIds: ["tf-d-chain-2"]
+    },
     "tf-d-two": {
       id: "tf-d-two",
       area: "day",
@@ -315,6 +328,19 @@ const monthData: MonthTaskData = {
       childIds: [],
       sourceWeekTaskId: null,
       sourceDayTaskId: null,
+      weektdayTaskIds: [],
+      daytdayTaskIds: null
+    },
+    "tf-d-chain-2": {
+      id: "tf-d-chain-2",
+      area: "day",
+      areaKey: "2026.6.2",
+      name: "repeatTask",
+      status: "doing",
+      parentId: null,
+      childIds: [],
+      sourceWeekTaskId: null,
+      sourceDayTaskId: "tf-d-chain-1",
       weektdayTaskIds: [],
       daytdayTaskIds: null
     },
@@ -378,10 +404,11 @@ const monthData: MonthTaskData = {
         { id: "tf-w-task-a", childIds: ["tf-w-task-a-1", "tf-w-task-a-2", "tf-w-task-a-3"] }
       ],
       days: {
-        "2026.6.1": { dayTaskIds: ["tf-d-one"] },
+        "2026.6.1": { dayTaskIds: ["tf-d-one", "tf-d-chain-1"] },
         "2026.6.2": {
           dayTaskIds: [
             "tf-d-two",
+            "tf-d-chain-2",
             { id: "tf-d-task-a", childIds: ["tf-d-task-a-1", "tf-d-task-a-2"] },
             { id: "tf-d-task-d", childIds: ["tf-d-task-d-1", "tf-d-task-d-2"] }
           ]
@@ -460,6 +487,11 @@ assert.deepEqual(
           name: "taskA",
           legacy: undefined,
           children: [{ name: "taskA.1", legacy: undefined }]
+        },
+        {
+          name: "repeatTask",
+          legacy: undefined,
+          children: undefined
         }
       ]
     },
@@ -490,8 +522,8 @@ assert.deepEqual(
     tasks: task.children?.map((child) => child.name)
   })),
   [
-    { date: "6.1", tasks: ["6.1 未完成"] },
-    { date: "6.2", tasks: ["taskA", "taskD"] }
+    { date: "6.1", tasks: ["6.1 未完成", "repeatTask"] },
+    { date: "6.2", tasks: ["repeatTask", "taskA", "taskD"] }
   ]
 );
 

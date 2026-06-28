@@ -5,6 +5,7 @@ import {
   changeDayTaskStatus,
   recalcGlobalStatus,
   hasSpecialMark,
+  shouldPromoteAddedTasklogToDoing,
 } from "../structure/v2Status";
 import { updateStatusMark, findTasklog } from "../structure/v2Document";
 import {
@@ -383,6 +384,38 @@ async function run(): Promise<void> {
     assert.equal(month.tasks[continuedId].status, "todo");
     assert.ok(!hasSpecialMark(month, rootId), "all-todo group should not be special");
     assert.ok(!hasSpecialMark(month, continuedId), "all-todo group should not be special");
+  }
+
+  // 3.4 Added tasklogs only promote truly todo tasks to doing
+  {
+    resetVault();
+    diskData = null;
+    await store.load();
+    await store.ensureMonth(file);
+
+    const todoId = await createTopLevelTask(store, vault, file, "day", "2026.6.1", "tasklogTodo");
+    assert.equal(
+      shouldPromoteAddedTasklogToDoing(getMonth(), todoId),
+      true,
+      "new tasklog should promote a plain todo task",
+    );
+
+    await changeDayTaskStatus(store, vault, file, todoId, "done");
+    assert.equal(
+      shouldPromoteAddedTasklogToDoing(getMonth(), todoId),
+      false,
+      "new tasklog must not downgrade a done task",
+    );
+
+    const weekId = await createTopLevelTask(store, vault, file, "week", weekKey, "tasklogSpecial");
+    const day1Id = await addWeekTaskToDay(store, vault, file, weekId, "2026.6.1");
+    const day2Id = await addWeekTaskToDay(store, vault, file, weekId, "2026.6.2");
+    await changeDayTaskStatus(store, vault, file, day1Id, "done");
+    assert.equal(
+      shouldPromoteAddedTasklogToDoing(getMonth(), day2Id),
+      false,
+      "new tasklog must not downgrade a special same-source task",
+    );
   }
 
   // ═══════════════════════════════════════════════

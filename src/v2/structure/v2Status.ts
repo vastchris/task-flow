@@ -242,6 +242,18 @@ export function hasSpecialMark(month: MonthTaskData, taskId: string): boolean {
   return false;
 }
 
+export function shouldPromoteAddedTasklogToDoing(
+  month: MonthTaskData,
+  taskId: string,
+): boolean {
+  const task = month.tasks[taskId];
+  if (!task) return false;
+  return task.area === "day"
+    && task.childIds.length === 0
+    && task.status === "todo"
+    && !hasSpecialMark(month, taskId);
+}
+
 // ── Same-source group (7.1.3) ──
 
 function applyCrossDateSameSourceGroup(

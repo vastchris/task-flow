@@ -174,16 +174,17 @@ export function buildPriorUnfinishedSections(
       .map((task) => taskIdentity(task))
   );
   const priorDayKeys = new Set(selectedWeek.days.slice(0, selectedIndex).map((day) => day.key));
-  const rootEntries = selectedWeek.days.slice(0, selectedIndex).flatMap((day) =>
+  const priorRoots = selectedWeek.days.slice(0, selectedIndex).flatMap((day) =>
     flattenOrderArray(getDayTaskIds(month, day.key))
       .map((id) => month.tasks[id])
       .filter((task): task is TaskRecord => Boolean(task)
         && task.area === "day"
         && task.areaKey === day.key
         && task.parentId === null)
-      .map((task) => buildPriorRootEntry(month, task, priorDayKeys, currentIdentities))
-      .filter((entry): entry is PriorRootEntry => Boolean(entry))
   );
+  const rootEntries = latestPriorRootsByIdentity(priorRoots)
+    .map((task) => buildPriorRootEntry(month, task, priorDayKeys, currentIdentities))
+    .filter((entry): entry is PriorRootEntry => Boolean(entry));
 
   const doingTasks = rootEntries
     .flatMap((entry) => entry.doingTask ? [entry.doingTask] : [])
@@ -199,6 +200,14 @@ export function buildPriorUnfinishedSections(
     sections.push({ id: "todo", title: "未开始", tasks: todoTasks });
   }
   return sections;
+}
+
+function latestPriorRootsByIdentity(tasks: TaskRecord[]): TaskRecord[] {
+  const latest = new Map<string, TaskRecord>();
+  for (const task of tasks) {
+    latest.set(taskIdentity(task), task);
+  }
+  return [...latest.values()];
 }
 
 function toDisplayTask(
@@ -250,6 +259,7 @@ function buildPriorRootEntry(
       && child.area === "day"
       && priorDayKeys.has(child.areaKey)
       && child.status !== "done"
+      && !hasSpecialMark(month, child.id)
       && !currentIdentities.has(taskIdentity(child)));
 
   if (root.childIds.length > 0) {
@@ -265,7 +275,7 @@ function buildPriorRootEntry(
     };
   }
 
-  if (root.status === "done" || currentIdentities.has(taskIdentity(root))) {
+  if (root.status === "done" || hasSpecialMark(month, root.id) || currentIdentities.has(taskIdentity(root))) {
     return null;
   }
   const displayTask = toPriorLeafTask(month, root, root.status === "todo");

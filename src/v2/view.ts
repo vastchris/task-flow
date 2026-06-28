@@ -34,7 +34,8 @@ import {
 import {
   applyDayTaskStatusChanges,
   changeDayTaskStatus,
-  runStatusDocumentOperation
+  runStatusDocumentOperation,
+  shouldPromoteAddedTasklogToDoing
 } from "./structure/v2Status";
 import { taskIdentityKey } from "./structure/v2TaskGroups";
 import { findTasklog, hasDayBlock, hasWeekBlock, orphanTasklog } from "./structure/v2Document";
@@ -4385,7 +4386,9 @@ export class TaskFlowView extends ItemView {
       // Check for added tasklogs
       for (const id of currentSet) {
         if (!prevSet.has(id)) {
-          statusChanges.push({ taskId: id, newStatus: "doing" });
+          if (monthBefore && shouldPromoteAddedTasklogToDoing(monthBefore, id)) {
+            statusChanges.push({ taskId: id, newStatus: "doing" });
+          }
         }
       }
 
